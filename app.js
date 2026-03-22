@@ -115,26 +115,17 @@ function initHome() {
 
   document.getElementById("home-streak").textContent = state.streak;
   document.getElementById("home-total").textContent = state.total;
+
+  // Auto-load verse on page load
+  if (!state.todayVerse) {
+    loadTodayVerse();
+  }
 }
-
-
 
 /* ════════════════════════════════════════════
    AI VERSE FETCH
 ════════════════════════════════════════════ */
 async function loadTodayVerse() {
-  // If we already have today's verse, just navigate to it
-  if (state.todayVerse) {
-    goTo("devotional");
-    return;
-  }
-
-  const btn = document.getElementById("load-btn");
-  btn.disabled = true;
-  btn.innerHTML = `
-    <div class="spinner" style="width:18px;height:18px;border-width:2px;border-top-color:var(--paper)"></div>
-    Receiving...`;
-
   const themes = state.themes.length ? state.themes : ["faith", "hope"];
   const dateStr = new Date().toLocaleDateString("en-US", {
     weekday: "long",
@@ -143,21 +134,34 @@ async function loadTodayVerse() {
     day: "numeric",
   });
 
+  // Show loading state
+  const btn = document.getElementById("load-btn");
+  if (btn) {
+    btn.disabled = true;
+    btn.innerHTML = `
+      <div class="spinner" style="width:18px;height:18px;border-width:2px;border-top-color:var(--paper)"></div>
+      Loading...`;
+  }
+
   const prompt = `You are a warm, thoughtful devotional writer. Generate an inspiring Bible verse with a short reflection.
 Themes: ${themes.join(", ")}
 Bible version: ${state.version}
 Reply ONLY with a valid JSON object — no markdown, no backticks, no extra text:
-{"verse":"full verse text","reference":"Book Chapter:Verse (${state.version})","reflection":"2-3 warm sentences reflecting on this verse","prayer":"one short closing prayer sentence"}`;`
+{"verse":"full verse text","reference":"Book Chapter:Verse (${state.version})","reflection":"2-3 warm sentences reflecting on this verse","prayer":"one short closing prayer sentence"}`;
 
   try {
+    const apiKey = localStorage.getItem("deepseek_api_key");
+    if (!apiKey) {
+      throw new Error(
+        "DeepSeek API key not found. Please set it in browser console: localStorage.setItem('deepseek_api_key', 'your_key')",
+      );
+    }
+
     const res = await fetch("https://api.deepseek.com/v1/chat/completions", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization:
-          "Bearer " +
-          (process.env.DEEPSEEK_API_KEY ||
-            localStorage.getItem("deepseek_api_key")),
+        Authorization: "Bearer " + apiKey,
       },
       body: JSON.stringify({
         model: "deepseek-chat",
@@ -165,6 +169,13 @@ Reply ONLY with a valid JSON object — no markdown, no backticks, no extra text
         messages: [{ role: "user", content: prompt }],
       }),
     });
+
+    if (!res.ok) {
+      const errorData = await res.json();
+      throw new Error(
+        `API error: ${res.status} - ${JSON.stringify(errorData)}`,
+      );
+    }
 
     const data = await res.json();
     const raw = data.choices[0].message.content
@@ -207,17 +218,17 @@ Reply ONLY with a valid JSON object — no markdown, no backticks, no extra text
     goTo("devotional");
   } catch (err) {
     console.error("[app] Verse fetch failed:", err);
-    btn.innerHTML = "Try again";
-    btn.disabled = false;
+    if (btn) {
+      btn.innerHTML = "Try again";
+      btn.disabled = false;
+    }
+    alert("Error loading verse: " + err.message);
     return;
   }
 
-  btn.disabled = false;
-  btn.innerHTML = `
-    <svg viewBox="0 0 16 16" style="width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round">
-      <path d="M8 1v7m0 0l-3-3m3 3l3-3M2 11v2a1 1 0 001 1h10a1 1 0 001-1v-2"/>
-    </svg>
-    Get a verse`;
+  if (btn) {
+    btn.disabled = false;
+  }
 }
 
 /* ════════════════════════════════════════════
@@ -253,7 +264,7 @@ function renderDevotional(d, dateOverride) {
 
     <div class="dev-actions">
       <button class="dev-btn outline" onclick="copyVerse()">Copy verse</button>
-      <button class="dev-btn solid"   onclick="goTo('home')">Done</button>
+      <button class="dev-btn solid" onclick="loadTodayVerse()">Next verse</button>
     </div>
 
     <div style="height:4px"></div>`;
