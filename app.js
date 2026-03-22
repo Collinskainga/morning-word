@@ -9,7 +9,6 @@
 const state = {
   streak: 5,
   total: 12,
-  hour: 7,
   themes: ["faith", "hope"],
   version: "NIV",
   todayVerse: null,
@@ -93,16 +92,6 @@ function goTo(id) {
 ════════════════════════════════════════════ */
 
 /**
- * Format an hour integer as a readable time string.
- * e.g. 7 → "7:00 AM",  15 → "3:00 PM"
- */
-function fmtHour(h) {
-  const period = h < 12 ? "AM" : "PM";
-  const display = h === 0 ? 12 : h > 12 ? h - 12 : h;
-  return `${display}:00 ${period}`;
-}
-
-/**
  * Escape HTML special characters to prevent XSS
  * when inserting user/API content into innerHTML.
  */
@@ -126,13 +115,9 @@ function initHome() {
 
   document.getElementById("home-streak").textContent = state.streak;
   document.getElementById("home-total").textContent = state.total;
-  updateNextTime();
 }
 
-function updateNextTime() {
-  document.getElementById("home-next-time").textContent =
-    fmtHour(state.hour) + " tomorrow";
-}
+
 
 /* ════════════════════════════════════════════
    AI VERSE FETCH
@@ -158,12 +143,11 @@ async function loadTodayVerse() {
     day: "numeric",
   });
 
-  const prompt = `You are a warm, thoughtful devotional writer. Generate a morning Bible devotional for today.
+  const prompt = `You are a warm, thoughtful devotional writer. Generate an inspiring Bible verse with a short reflection.
 Themes: ${themes.join(", ")}
 Bible version: ${state.version}
-Date: ${dateStr}
 Reply ONLY with a valid JSON object — no markdown, no backticks, no extra text:
-{"verse":"full verse text","reference":"Book Chapter:Verse (${state.version})","reflection":"2-3 warm sentences connecting the verse to daily life","prayer":"one short closing prayer sentence"}`;
+{"verse":"full verse text","reference":"Book Chapter:Verse (${state.version})","reflection":"2-3 warm sentences reflecting on this verse","prayer":"one short closing prayer sentence"}`;`
 
   try {
     const res = await fetch("https://api.deepseek.com/v1/chat/completions", {
@@ -233,7 +217,7 @@ Reply ONLY with a valid JSON object — no markdown, no backticks, no extra text
     <svg viewBox="0 0 16 16" style="width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round">
       <path d="M8 1v7m0 0l-3-3m3 3l3-3M2 11v2a1 1 0 001 1h10a1 1 0 001-1v-2"/>
     </svg>
-    Receive today's verse`;
+    Get a verse`;
 }
 
 /* ════════════════════════════════════════════
@@ -455,10 +439,8 @@ function saveSettings() {
   state.version = document.getElementById("version-sel").value;
   state.notifOn = document.getElementById("notif-toggle").checked;
 
-  updateNextTime();
-
   const msg = document.getElementById("save-msg");
-  msg.textContent = "Saved — next verse at " + fmtHour(state.hour);
+  msg.textContent = "Settings saved!";
   setTimeout(() => {
     msg.textContent = "";
   }, 3000);

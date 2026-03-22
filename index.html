@@ -1,269 +1,298 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <meta name="theme-color" content="#1a1a18" />
-  <meta name="description" content="Daily Bible verses delivered every morning." />
-  <title>Morning Word</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#1a1a18" />
+    <meta
+      name="description"
+      content="Daily Bible verses delivered every morning."
+    />
+    <title>Morning Word</title>
 
-  <!-- PWA -->
-   <!-- PWA -->
-  <link rel="manifest"         href="manifest.json" />
-  <link rel="apple-touch-icon" href="icons/icon-192.png" />
-  <link rel="icon"             href="icons/icon.ico" />
-  <link rel="icon" href="icons/icon.ico" />
-  <link rel="manifest"         href="manifest.json" />
-  <link rel="apple-touch-icon" href="icons/icon-192.png" />
+    <!-- PWA -->
+    <!-- PWA -->
+    <link rel="manifest" href="manifest.json" />
+    <link rel="apple-touch-icon" href="icons/icon-192.png" />
+    <link rel="icon" href="icons/icon.ico" />
+    <link rel="icon" href="icons/icon.ico" />
+    <link rel="manifest" href="manifest.json" />
+    <link rel="apple-touch-icon" href="icons/icon-192.png" />
 
-  <!-- Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
 
-  <!-- Styles -->
-  <link rel="stylesheet" href="styles.css" />
-</head>
-<body>
-<div id="app">
-
-  <!-- ══════════════════════════════════════════
+    <!-- Styles -->
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div id="app">
+      <!-- ══════════════════════════════════════════
        HOME SCREEN
   ══════════════════════════════════════════ -->
-  <section class="screen active" id="screen-home">
+      <section class="screen active" id="screen-home">
+        <div class="top-bar">
+          <div>
+            <h1>Morning Word</h1>
+            <div class="sub" id="home-date-lbl"></div>
+          </div>
+        </div>
 
-    <div class="top-bar">
-      <div>
-        <h1>Morning Word</h1>
-        <div class="sub" id="home-date-lbl"></div>
-      </div>
-    </div>
+        <div class="home-hero" id="home-hero" onclick="goTo('devotional')">
+          <div class="hero-eyebrow">Your verse</div>
+          <div class="hero-verse" id="home-verse-text">
+            <span class="hero-empty">Get a verse to read...</span>
+          </div>
+          <div class="hero-ref" id="home-verse-ref"></div>
+          <div class="hero-cta" id="home-hero-cta" style="display: none">
+            Read full devotional
+            <svg viewBox="0 0 14 14"><path d="M2 7h10M7 2l5 5-5 5" /></svg>
+          </div>
+        </div>
 
-    <div class="home-hero" id="home-hero" onclick="goTo('devotional')">
-      <div class="hero-eyebrow">Today's verse</div>
-      <div class="hero-verse" id="home-verse-text">
-        <span class="hero-empty">Your morning word awaits...</span>
-      </div>
-      <div class="hero-ref" id="home-verse-ref"></div>
-      <div class="hero-cta" id="home-hero-cta" style="display:none">
-        Read full devotional
-        <svg viewBox="0 0 14 14"><path d="M2 7h10M7 2l5 5-5 5"/></svg>
-      </div>
-    </div>
+        <div class="stats-row">
+          <div class="stat-card">
+            <div class="stat-val" id="home-streak">0</div>
+            <div class="stat-lbl">day streak</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-val" id="home-total">0</div>
+            <div class="stat-lbl">verses read</div>
+          </div>
+        </div>
 
-    <div class="stats-row">
-      <div class="stat-card">
-        <div class="stat-val" id="home-streak">0</div>
-        <div class="stat-lbl">day streak</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-val" id="home-total">0</div>
-        <div class="stat-lbl">verses read</div>
-      </div>
-    </div>
+        <button class="load-btn" id="load-btn" onclick="loadTodayVerse()">
+          <svg viewBox="0 0 16 16">
+            <path
+              d="M8 1v7m0 0l-3-3m3 3l3-3M2 11v2a1 1 0 001 1h10a1 1 0 001-1v-2"
+            />
+          </svg>
+          Get a verse
+        </button>
 
-    <div class="next-pill">
-      <div class="next-pill-left">
-        Next delivery
-        <strong id="home-next-time">7:00 AM tomorrow</strong>
-      </div>
-      <div class="next-dot"></div>
-    </div>
+        <div style="height: 4px"></div>
+      </section>
 
-    <button class="load-btn" id="load-btn" onclick="loadTodayVerse()">
-      <svg viewBox="0 0 16 16"><path d="M8 1v7m0 0l-3-3m3 3l3-3M2 11v2a1 1 0 001 1h10a1 1 0 001-1v-2"/></svg>
-      Receive today's verse
-    </button>
-
-    <div style="height:4px"></div>
-  </section>
-
-  <!-- ══════════════════════════════════════════
+      <!-- ══════════════════════════════════════════
        DEVOTIONAL SCREEN
        — This is the screen the user lands on
          when they tap the push notification.
   ══════════════════════════════════════════ -->
-  <section class="screen" id="screen-devotional">
+      <section class="screen" id="screen-devotional">
+        <div class="dev-back" onclick="goTo('home')">
+          <svg viewBox="0 0 16 16"><path d="M10 3L5 8l5 5" /></svg>
+          Back
+        </div>
 
-    <div class="dev-back" onclick="goTo('home')">
-      <svg viewBox="0 0 16 16"><path d="M10 3L5 8l5 5"/></svg>
-      Back
-    </div>
+        <div id="dev-content">
+          <div class="dev-loading">
+            <div class="spinner"></div>
+            Preparing your word...
+          </div>
+        </div>
+      </section>
 
-    <div id="dev-content">
-      <div class="dev-loading">
-        <div class="spinner"></div>
-        Preparing your word...
-      </div>
-    </div>
-
-  </section>
-
-  <!-- ══════════════════════════════════════════
+      <!-- ══════════════════════════════════════════
        HISTORY SCREEN
   ══════════════════════════════════════════ -->
-  <section class="screen" id="screen-history">
+      <section class="screen" id="screen-history">
+        <div class="top-bar">
+          <div>
+            <h1>Archive</h1>
+            <div class="sub" id="hist-count-lbl">No verses yet</div>
+          </div>
+        </div>
 
-    <div class="top-bar">
-      <div>
-        <h1>Archive</h1>
-        <div class="sub" id="hist-count-lbl">No verses yet</div>
-      </div>
-    </div>
+        <div id="hist-list">
+          <div class="hist-empty">
+            No verses yet.
+            <small>Your past devotionals will appear here.</small>
+          </div>
+        </div>
 
-    <div id="hist-list">
-      <div class="hist-empty">
-        No verses yet.
-        <small>Your past devotionals will appear here.</small>
-      </div>
-    </div>
+        <div style="height: 4px"></div>
+      </section>
 
-    <div style="height:4px"></div>
-  </section>
-
-  <!-- ══════════════════════════════════════════
+      <!-- ══════════════════════════════════════════
        STREAK SCREEN
   ══════════════════════════════════════════ -->
-  <section class="screen" id="screen-streak">
-
-    <div class="top-bar">
-      <div>
-        <h1>Progress</h1>
-        <div class="sub">Keep showing up</div>
-      </div>
-    </div>
-
-    <div class="streak-hero">
-      <div>
-        <div style="font-family:var(--ff-mono);font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--gold-l);margin-bottom:8px">
-          Current streak
+      <section class="screen" id="screen-streak">
+        <div class="top-bar">
+          <div>
+            <h1>Progress</h1>
+            <div class="sub">Keep showing up</div>
+          </div>
         </div>
-        <div class="streak-num" id="streak-big">0<span> days</span></div>
-      </div>
-      <div class="streak-badge">
-        <div class="streak-badge-label">Total read</div>
-        <div class="streak-badge-val" id="streak-total-badge">0</div>
-      </div>
-    </div>
 
-    <div class="pad-sm"><div class="label">This week</div></div>
-    <div class="week-row"   id="week-row"></div>
+        <div class="streak-hero">
+          <div>
+            <div
+              style="
+                font-family: var(--ff-mono);
+                font-size: 10px;
+                letter-spacing: 1px;
+                text-transform: uppercase;
+                color: var(--gold-l);
+                margin-bottom: 8px;
+              "
+            >
+              Current streak
+            </div>
+            <div class="streak-num" id="streak-big">0<span> days</span></div>
+          </div>
+          <div class="streak-badge">
+            <div class="streak-badge-label">Total read</div>
+            <div class="streak-badge-val" id="streak-total-badge">0</div>
+          </div>
+        </div>
 
-    <div class="pad-sm"><div class="label" id="month-label"></div></div>
-    <div class="month-grid" id="month-grid"></div>
+        <div class="pad-sm"><div class="label">This week</div></div>
+        <div class="week-row" id="week-row"></div>
 
-    <div class="pad-sm"><div class="label">Milestones</div></div>
-    <div class="milestones" id="milestones"></div>
+        <div class="pad-sm"><div class="label" id="month-label"></div></div>
+        <div class="month-grid" id="month-grid"></div>
 
-    <div style="height:4px"></div>
-  </section>
+        <div class="pad-sm"><div class="label">Milestones</div></div>
+        <div class="milestones" id="milestones"></div>
 
-  <!-- ══════════════════════════════════════════
+        <div style="height: 4px"></div>
+      </section>
+
+      <!-- ══════════════════════════════════════════
        SETTINGS SCREEN
   ══════════════════════════════════════════ -->
-  <section class="screen" id="screen-settings">
+      <section class="screen" id="screen-settings">
+        <div class="top-bar">
+          <div>
+            <h1>Settings</h1>
+            <div class="sub">Customize your morning</div>
+          </div>
+        </div>
 
-    <div class="top-bar">
-      <div>
-        <h1>Settings</h1>
-        <div class="sub">Customize your morning</div>
-      </div>
-    </div>
+        <div class="setting-group">
+          <div class="setting-group-lbl">Delivery time</div>
+          <div class="hour-scroll" id="hour-scroll"></div>
+        </div>
 
-    <div class="setting-group">
-      <div class="setting-group-lbl">Delivery time</div>
-      <div class="hour-scroll" id="hour-scroll"></div>
-    </div>
+        <div class="setting-group">
+          <div class="setting-group-lbl">Preferences</div>
 
-    <div class="setting-group">
-      <div class="setting-group-lbl">Preferences</div>
+          <div class="setting-row">
+            <span class="setting-row-label">Bible version</span>
+            <select class="setting-select" id="version-sel">
+              <option value="NIV">NIV</option>
+              <option value="KJV">KJV</option>
+              <option value="ESV">ESV</option>
+              <option value="NLT">NLT</option>
+              <option value="NKJV">NKJV</option>
+              <option value="MSG">The Message</option>
+            </select>
+          </div>
 
-      <div class="setting-row">
-        <span class="setting-row-label">Bible version</span>
-        <select class="setting-select" id="version-sel">
-          <option value="NIV">NIV</option>
-          <option value="KJV">KJV</option>
-          <option value="ESV">ESV</option>
-          <option value="NLT">NLT</option>
-          <option value="NKJV">NKJV</option>
-          <option value="MSG">The Message</option>
-        </select>
-      </div>
+          <div class="setting-row">
+            <span class="setting-row-label">Push notifications</span>
+            <label class="toggle-wrap">
+              <input type="checkbox" id="notif-toggle" checked />
+              <div class="toggle-track"></div>
+              <div class="toggle-thumb"></div>
+            </label>
+          </div>
+        </div>
 
-      <div class="setting-row">
-        <span class="setting-row-label">Push notifications</span>
-        <label class="toggle-wrap">
-          <input type="checkbox" id="notif-toggle" checked />
-          <div class="toggle-track"></div>
-          <div class="toggle-thumb"></div>
-        </label>
-      </div>
-    </div>
+        <div class="setting-group">
+          <div class="setting-group-lbl">Themes I care about</div>
+          <div class="themes-wrap" id="themes-wrap"></div>
+        </div>
 
-    <div class="setting-group">
-      <div class="setting-group-lbl">Themes I care about</div>
-      <div class="themes-wrap" id="themes-wrap"></div>
-    </div>
+        <button class="save-btn" onclick="saveSettings()">Save settings</button>
+        <div class="save-msg" id="save-msg"></div>
 
-    <button class="save-btn" onclick="saveSettings()">Save settings</button>
-    <div class="save-msg" id="save-msg"></div>
+        <div style="height: 4px"></div>
+      </section>
 
-    <div style="height:4px"></div>
-  </section>
-
-  <!-- ══════════════════════════════════════════
+      <!-- ══════════════════════════════════════════
        BOTTOM NAV
   ══════════════════════════════════════════ -->
-  <nav id="nav">
+      <nav id="nav">
+        <button
+          class="nav-item active"
+          data-screen="home"
+          onclick="goTo('home')"
+        >
+          <svg viewBox="0 0 22 22">
+            <path
+              d="M3 9.5L11 3l8 6.5V19a1 1 0 01-1 1H14v-5h-4v5H4a1 1 0 01-1-1V9.5z"
+            />
+          </svg>
+          <div class="nav-dot"></div>
+          Home
+        </button>
 
-    <button class="nav-item active" data-screen="home" onclick="goTo('home')">
-      <svg viewBox="0 0 22 22">
-        <path d="M3 9.5L11 3l8 6.5V19a1 1 0 01-1 1H14v-5h-4v5H4a1 1 0 01-1-1V9.5z"/>
-      </svg>
-      <div class="nav-dot"></div>
-      Home
-    </button>
+        <button
+          class="nav-item"
+          data-screen="devotional"
+          onclick="goTo('devotional')"
+        >
+          <svg viewBox="0 0 22 22">
+            <path d="M4 4h14v2H4zm0 5h14v2H4zm0 5h9v2H4z" />
+            <path d="M16 14l4 4" />
+          </svg>
+          <div class="nav-dot"></div>
+          Today
+        </button>
 
-    <button class="nav-item" data-screen="devotional" onclick="goTo('devotional')">
-      <svg viewBox="0 0 22 22">
-        <path d="M4 4h14v2H4zm0 5h14v2H4zm0 5h9v2H4z"/>
-        <path d="M16 14l4 4"/>
-      </svg>
-      <div class="nav-dot"></div>
-      Today
-    </button>
+        <button
+          class="nav-item"
+          data-screen="history"
+          onclick="goTo('history')"
+        >
+          <svg viewBox="0 0 22 22">
+            <path
+              d="M5 3h12a1 1 0 011 1v14a1 1 0 01-1 1H5a1 1 0 01-1-1V4a1 1 0 011-1z"
+            />
+            <path d="M8 8h6M8 12h6M8 16h3" />
+          </svg>
+          <div class="nav-dot"></div>
+          Archive
+        </button>
 
-    <button class="nav-item" data-screen="history" onclick="goTo('history')">
-      <svg viewBox="0 0 22 22">
-        <path d="M5 3h12a1 1 0 011 1v14a1 1 0 01-1 1H5a1 1 0 01-1-1V4a1 1 0 011-1z"/>
-        <path d="M8 8h6M8 12h6M8 16h3"/>
-      </svg>
-      <div class="nav-dot"></div>
-      Archive
-    </button>
+        <button class="nav-item" data-screen="streak" onclick="goTo('streak')">
+          <svg viewBox="0 0 22 22">
+            <path
+              d="M11 2l2.5 5.5 5.5.8-4 3.9.95 5.5L11 15l-4.95 2.7.95-5.5-4-3.9 5.5-.8z"
+            />
+          </svg>
+          <div class="nav-dot"></div>
+          Streak
+        </button>
 
-    <button class="nav-item" data-screen="streak" onclick="goTo('streak')">
-      <svg viewBox="0 0 22 22">
-        <path d="M11 2l2.5 5.5 5.5.8-4 3.9.95 5.5L11 15l-4.95 2.7.95-5.5-4-3.9 5.5-.8z"/>
-      </svg>
-      <div class="nav-dot"></div>
-      Streak
-    </button>
+        <button
+          class="nav-item"
+          data-screen="settings"
+          onclick="goTo('settings')"
+        >
+          <svg viewBox="0 0 22 22">
+            <circle cx="11" cy="11" r="3" />
+            <path
+              d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"
+            />
+          </svg>
+          <div class="nav-dot"></div>
+          Settings
+        </button>
+      </nav>
+    </div>
+    <!-- #app -->
 
-    <button class="nav-item" data-screen="settings" onclick="goTo('settings')">
-      <svg viewBox="0 0 22 22">
-        <circle cx="11" cy="11" r="3"/>
-        <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/>
-      </svg>
-      <div class="nav-dot"></div>
-      Settings
-    </button>
-
-  </nav>
-
-</div><!-- #app -->
-
-<!-- JavaScript — loaded last so the DOM is ready -->
-<script src="app.js"></script>
-</body>
+    <!-- JavaScript — loaded last so the DOM is ready -->
+    <script src="app.js"></script>
+  </body>
 </html>
