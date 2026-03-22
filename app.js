@@ -150,11 +150,18 @@ Reply ONLY with a valid JSON object — no markdown, no backticks, no extra text
 {"verse":"full verse text","reference":"Book Chapter:Verse (${state.version})","reflection":"2-3 warm sentences reflecting on this verse","prayer":"one short closing prayer sentence"}`;
 
   try {
-    const apiKey = localStorage.getItem("deepseek_api_key");
+    let apiKey = localStorage.getItem("deepseek_api_key");
     if (!apiKey) {
-      throw new Error(
-        "DeepSeek API key not found. Please set it in browser console: localStorage.setItem('deepseek_api_key', 'your_key')",
+      apiKey = prompt(
+        "🔑 DeepSeek API Key Required\n\nPlease enter your DeepSeek API key:\n(Get one from https://platform.deepseek.com)",
+        "",
       );
+      if (!apiKey) {
+        throw new Error(
+          "API key is required to load verses. Please enter your DeepSeek API key.",
+        );
+      }
+      localStorage.setItem("deepseek_api_key", apiKey);
     }
 
     const res = await fetch("https://api.deepseek.com/v1/chat/completions", {
